@@ -1,0 +1,23 @@
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
+
+#include <thrust/host_vector.h>
+
+
+using namespace std;
+
+#define BLOCK_SIZE 1024
+#define CudaChainPoint  float2
+
+void importQHull(thrust::host_vector<float> &pts_x,
+                 thrust::host_vector<float> &pts_y,
+                 std::string &path);
+
+int cudaChainNew(const thrust::host_vector<float> &x,
+                 const thrust::host_vector<float> &y,
+                 thrust::host_vector<float> &hull_x,
+                 thrust::host_vector<float> &hull_y);
+
+int simpleHull_2D(CudaChainPoint *V, int n, CudaChainPoint *H);
+
+void exportOFF(CudaChainPoint *pts, int n);
