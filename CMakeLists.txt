@@ -28,4 +28,4 @@ target_compile_options(CudaChain PRIVATE "SHELL:--param ggc-min-expand=1")
 target_compile_options(CudaChain PRIVATE "SHELL:--param ggc-min-heapsize=32768")
 #
 install(TARGETS CudaChain DESTINATION bin)
-install(FILES ${CudaChain_SOURCE_FILES} DESTINATION ${INCLUDE_INSTALL_DIR}/libcudachain)
+install(FILES ${CUDACHAIN_SOURCE_FILES} DESTINATION ${INCLUDE_INSTALL_DIR}/libcudachain)
