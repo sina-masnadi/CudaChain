@@ -1,22 +1,31 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.15)
+set(CMAKE_C_COMPILER "/usr/bin/gcc-6")
+set(CMAKE_CXX_COMPILER "/usr/bin/gcc-6")
 project(CudaChain)
 find_package(CUDA REQUIRED 9.1)
+set(CMAKE_BUILD_TYPE Release)
+set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include)
+set(
+        CUDA_NVCC_FLAGS
+        ${CUDA_NVCC_FLAGS}; -gencode arch=compute_61,code=sm_61
+)
 
-if (APPLE)
-    # for MacOS X
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-elseif (UNIX)
-    # for Linux
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-else ()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-endif ()
+include_directories(src)
 
-SET(TARGET_H CudaChain.h)
+set(CUDACHAIN_SOURCE_FILES
+        src/CudaWrapper.h
+        src/ThrustWrapper.h
+        src/CudaChain.h
+        src/CudaChain.cu
+        )
 
-cuda_add_library(CudaChain CudaChain.cu CudaChain.h)
+CUDA_ADD_LIBRARY(
+        ${PROJECT_NAME}
+        ${CUDACHAIN_SOURCE_FILES}
+)
 
 target_compile_options(CudaChain PRIVATE "SHELL:--param ggc-min-expand=1")
 target_compile_options(CudaChain PRIVATE "SHELL:--param ggc-min-heapsize=32768")
-
-#target_link_libraries(ConvexHull PRIVATE CudaChain)
+#
+install(TARGETS CudaChain DESTINATION bin)
+install(FILES ${CudaChain_SOURCE_FILES} DESTINATION ${INCLUDE_INSTALL_DIR}/libcudachain)

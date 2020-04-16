@@ -12,22 +12,16 @@
 // Warning:  Ignore numerical non-robustness and geometrical degeneracies
 
 
-
-#include "CudaChain.h"
-#include <thrust/device_vector.h>
-#include <thrust/functional.h>
-#include <thrust/partition.h>
-#include <thrust/reverse.h>
-#include <thrust/extrema.h>
-#include <thrust/pair.h>
-#include <thrust/sort.h>
-
-
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <fstream>
 #include <string>
-#include <time.h>
+#include <ctime>
+
+#include "CudaChain.h"
+
+
+
 
 #define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
 
@@ -536,8 +530,8 @@ int cudaChainNew(const thrust::host_vector<float> &x, const thrust::host_vector<
     typedef thrust::zip_iterator<FloatIteratorTuple> Float3Iterator;
 
     // create some zip_iterators
-    Float3Iterator P_first = thrust::make_zip_iterator(make_tuple(d_x.begin(), d_y.begin(), d_pos.begin()));
-    Float3Iterator P_last = thrust::make_zip_iterator(make_tuple(d_x.end(), d_y.end(), d_pos.end()));
+    Float3Iterator P_first = thrust::make_zip_iterator(thrust::make_tuple(d_x.begin(), d_y.begin(), d_pos.begin()));
+    Float3Iterator P_last = thrust::make_zip_iterator(thrust::make_tuple(d_x.end(), d_y.end(), d_pos.end()));
 
     // pass the zip_iterators into Partion()
     // Partion

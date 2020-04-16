@@ -1,7 +1,5 @@
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
-
-#include <thrust/host_vector.h>
+#include "CudaWrapper.h"
+#include "ThrustWrapper.h"
 
 
 using namespace std;
