@@ -18,9 +18,7 @@
 #include <string>
 #include <ctime>
 
-#include "CudaChain.h"
-
-
+#include "CudaChain.cuh"
 
 
 #define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
@@ -47,11 +45,10 @@ void importQHull(thrust::host_vector<float> &pts_x,
 //    cout <<"\nPlease Input File Name of Point Set:  ";
 //    cin >>str1;
     ifstream fin(path.c_str());
-//    if (!fin)
-//    {
-//        cout <<"\nCannot Open File ! " <<str1 <<endl;
-//        exit(1);
-//    }
+    if (!fin) {
+        cout << "\nCannot Open File ! " << str1 << endl;
+        exit(1);
+    }
 
     float x, y;
     int Dim, nVertex;
@@ -676,41 +673,46 @@ int simpleHull_2D(CudaChainPoint *V, int n, CudaChainPoint *H) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//int main(int argc, char **argv)
-//{
-//    std::cout << "\nBLOCK_SIZE :  "  << BLOCK_SIZE << '\n';
-//
-//    // Host containers for storing x and y
-//    thrust::host_vector<float> ipts_x;
-//    thrust::host_vector<float> ipts_y;
-//
-//    // Input points
-//    importQHull(ipts_x, ipts_y);
-//
-//    int n = ipts_x.size();
-//
-//    thrust::host_vector<float> opts_x(n);
-//    thrust::host_vector<float> opts_y(n);
-//
-//    // Perform 1st and 2nd rounds of discarding
-//    int h = cudaChainNew(ipts_x, ipts_y, opts_x, opts_y);
-//
-//    // Finalize the computing of expected convex hull, i.e.,
-//    // Calculate the convex hull of a simple polygon
-//    CudaChainPoint * opts = new CudaChainPoint[h];
-//    for(int i = 0; i < h; i++) {
-//        opts[i].x = opts_x[i];
-//        opts[i].y = opts_y[i];
-//    }
-//    CudaChainPoint * H = new CudaChainPoint[h];
-//    h = simpleHull_2D( opts, h, H );
-//
-//    // Output: to OFF file format
+int main(int argc, char **argv) {
+    std::cout << "\nBLOCK_SIZE :  " << BLOCK_SIZE << '\n';
+
+    // Host containers for storing x and y
+    thrust::host_vector<float> ipts_x;
+    thrust::host_vector<float> ipts_y;
+
+
+    std::string path = "/home/sina/Documents/ConvexHullPlayGround/cudachain/sample.txt";
+    // Input points
+    importQHull(ipts_x, ipts_y, path);
+    cout << ipts_x.size() << endl;
+    for (float pt:ipts_x) {
+        cout << pt << endl;
+    }
+
+    int n = ipts_x.size();
+
+    thrust::host_vector<float> opts_x(n);
+    thrust::host_vector<float> opts_y(n);
+
+    // Perform 1st and 2nd rounds of discarding
+    int h = cudaChainNew(ipts_x, ipts_y, opts_x, opts_y);
+
+    // Finalize the computing of expected convex hull, i.e.,
+    // Calculate the convex hull of a simple polygon
+    CudaChainPoint *opts = new CudaChainPoint[h];
+    for (int i = 0; i < h; i++) {
+        opts[i].x = opts_x[i];
+        opts[i].y = opts_y[i];
+    }
+    CudaChainPoint *H = new CudaChainPoint[h];
+    h = simpleHull_2D(opts, h, H);
+
+    // Output: to OFF file format
 //    exportOFF(H, h);
-//
-//    delete [] opts;
-//
+
+    delete[] opts;
+
 //    system("pause");
-//
-//    return 0;
-//}
+
+    return 0;
+}
