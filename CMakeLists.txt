@@ -3,7 +3,7 @@ project(CudaChain CUDA)
 
 #find_package(CUDA 9.1 REQUIRED)
 #set(CMAKE_BUILD_TYPE Release)
-#set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include)
+set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include)
 #set(
 #        CUDA_NVCC_FLAGS
 #        ${CUDA_NVCC_FLAGS}; -gencode arch=compute_61,code=sm_61
