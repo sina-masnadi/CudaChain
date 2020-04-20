@@ -34,6 +34,7 @@ namespace CudaChain {
                      thrust::host_vector<float> &hull_x,
                      thrust::host_vector<float> &hull_y);
 
+    __host__ __device__
     int simpleHull_2D(CudaChainPoint *V, int n, CudaChainPoint *H);
 
     void exportOFF(CudaChainPoint *pts, int n);

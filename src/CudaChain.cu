@@ -629,7 +629,6 @@ namespace CudaChain {
 //    Output: H[] = output convex hull array of vertices (max is n)
 //    Return: h   = the number of points in H[]
     __host__ __device__
-
     int simpleHull_2D(CudaChainPoint *V, int n, CudaChainPoint *H) {
         // initialize a deque D[] from bottom to top so that the
         // 1st three vertices of V[] are a counterclockwise triangle
