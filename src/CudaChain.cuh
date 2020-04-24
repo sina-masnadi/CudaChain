@@ -1,6 +1,27 @@
-#include "CudaWrapper.h"
-#include "ThrustWrapper.h"
+#pragma once
 
+#include <device_launch_parameters.h>
+#include <thrust/count.h>
+#include <thrust/device_vector.h>
+#include <thrust/host_vector.h>
+#include <thrust/remove.h>
+#include <thrust/scan.h>
+#include <thrust/sequence.h>
+#include <thrust/sort.h>
+#include <thrust/unique.h>
+#include <thrust/extrema.h>
+
+#include <thrust/functional.h>
+#include <thrust/partition.h>
+#include <thrust/reverse.h>
+#include <thrust/pair.h>
+
+#include <cuda_runtime.h>
+#include <cstdio>
+#include <cstdlib>
+
+typedef thrust::device_vector< int >    IntTVec;
+typedef thrust::host_vector< int >      IntHVec;
 
 using namespace std;
 
@@ -22,6 +43,8 @@ namespace CudaChain {
     int simpleHull_2D(CudaChainPoint *V, int n, CudaChainPoint *H);
 
     void exportOFF(CudaChainPoint *pts, int n);
+
+    void printOFF(CudaChainPoint *pts, int n);
 
 
 }

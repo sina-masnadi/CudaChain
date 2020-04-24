@@ -90,6 +90,26 @@ namespace CudaChain {
 
     }
 
+    void printOFF(CudaChainPoint *pts, int n) // Use C/C++ arrays for exporting
+    {
+        float x, y, z;
+        int nVert = n;
+
+        cout << "OFF" << endl;
+        cout << nVert << "  " << 1 << "  " << 0 << endl;
+        for (int i = 0; i < nVert; i++) {
+            x = pts[i].x;
+            y = pts[i].y;
+            z = 0.0;
+            cout << x << "   " << y << "   " << z << endl;
+        }
+        cout << nVert << "   ";
+
+        for (int i = 0; i < nVert; i++) {
+            cout << i << "   ";
+        }
+    }
+
 // Export the resulting convex hull to OFF file
     void exportOFF(CudaChainPoint **pts, int n) // Use C/C++ arrays for exporting
     {

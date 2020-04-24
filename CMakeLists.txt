@@ -12,8 +12,6 @@ set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include)
 set(CMAKE_CUDA_STANDARD 11)
 
 set(CUDACHAIN_SOURCE_FILES
-        src/CudaWrapper.h
-        src/ThrustWrapper.h
         src/CudaChain.cu
         src/CudaChain.cuh
         )
