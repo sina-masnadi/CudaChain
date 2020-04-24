@@ -1,23 +1,6 @@
-#ifndef CUDACHAIN_LIBRARY_CUH
-#pragma once
+#include "CudaWrapper.h"
+#include "ThrustWrapper.h"
 
-#include <device_launch_parameters.h>
-#include <thrust/count.h>
-#include <thrust/device_vector.h>
-#include <thrust/host_vector.h>
-#include <thrust/remove.h>
-#include <thrust/scan.h>
-#include <thrust/sequence.h>
-#include <thrust/sort.h>
-#include <thrust/unique.h>
-#include <thrust/extrema.h>
-
-#include <thrust/functional.h>
-#include <thrust/partition.h>
-#include <thrust/reverse.h>
-#include <thrust/pair.h>
-
-#define CUDACHAIN_LIBRARY_CUH
 
 using namespace std;
 
@@ -25,6 +8,7 @@ using namespace std;
 #define CudaChainPoint  float2
 
 namespace CudaChain {
+
     void importQHull(thrust::host_vector<float> &pts_x,
                      thrust::host_vector<float> &pts_y,
                      std::string &path);
@@ -38,6 +22,6 @@ namespace CudaChain {
     int simpleHull_2D(CudaChainPoint *V, int n, CudaChainPoint *H);
 
     void exportOFF(CudaChainPoint *pts, int n);
-}
 
-#endif //CUDACHAIN_LIBRARY_CUH
+
+}

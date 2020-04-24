@@ -20,17 +20,8 @@
 
 #include "CudaChain.cuh"
 
+
 namespace CudaChain {
-
-#define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
-
-    inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort = true) {
-        if (code != cudaSuccess) {
-            fprintf(stderr, "GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
-            if (abort) exit(code);
-        }
-    }
-
 
 /////////////// Input & Output Interface ////////////////
 
@@ -167,6 +158,7 @@ namespace CudaChain {
         fout.close();
 
     }
+
 
 /////////////////////////////////////////////////////////
 // isLeft():tests if a point is Left|On|Right of an infinite line.
@@ -467,8 +459,8 @@ namespace CudaChain {
         int n = x.size(); // Number of points
 
         // Copy data from host side to device side
-        thrust::device_vector<float> d_x = x;
-        thrust::device_vector<float> d_y = y;
+        thrust::device_vector<float> d_x(x);
+        thrust::device_vector<float> d_y(y);
 
         typedef thrust::device_vector<float>::iterator FloatIter;
 
@@ -513,8 +505,8 @@ namespace CudaChain {
         int *d_pos_ptr = thrust::raw_pointer_cast(&d_pos[0]);
 
         // 1st discarding :  Block size can be 1024 in this kernel
-        kernelPreprocess << < (n + 1023) / 1024, 1024 >> > (d_extreme_x_ptr, d_extreme_y_ptr,
-                d_x_ptr, d_y_ptr, d_pos_ptr, n);
+        kernelPreprocess <<< (n + 1023) / 1024, 1024 >>>(d_extreme_x_ptr, d_extreme_y_ptr,
+                                                         d_x_ptr, d_y_ptr, d_pos_ptr, n);
 
         // Set Extreme Points Specifically
         d_pos[minx - d_x.begin()] = 1;  // min X
@@ -593,22 +585,22 @@ namespace CudaChain {
         // Region 1
         base = 0;
         length = first_of_R2 - first_of_R1;
-        kernelCheck_R1_device << < 1, BLOCK_SIZE >> > (d_y_ptr, d_pos_ptr, base, length);  // Only Y
+        kernelCheck_R1_device <<< 1, BLOCK_SIZE >>>(d_y_ptr, d_pos_ptr, base, length);  // Only Y
 
         // Region 2
         base = first_of_R2 - first_of_R1;
         length = first_of_R3 - first_of_R2;
-        kernelCheck_R2_device << < 1, BLOCK_SIZE >> > (d_x_ptr, d_pos_ptr, base, length);  // Only X
+        kernelCheck_R2_device <<< 1, BLOCK_SIZE >>>(d_x_ptr, d_pos_ptr, base, length);  // Only X
 
         // Region 3
         base = first_of_R3 - first_of_R1;
         length = first_of_R4 - first_of_R3;
-        kernelCheck_R3_device << < 1, BLOCK_SIZE >> > (d_y_ptr, d_pos_ptr, base, length);  // Only Y
+        kernelCheck_R3_device <<< 1, BLOCK_SIZE >>>(d_y_ptr, d_pos_ptr, base, length);  // Only Y
 
         // Region 4
         base = first_of_R4 - first_of_R1;
         length = first_of_R0 - first_of_R4;
-        kernelCheck_R4_device << < 1, BLOCK_SIZE >> > (d_x_ptr, d_pos_ptr, base, length);  // Only X
+        kernelCheck_R4_device <<< 1, BLOCK_SIZE >>>(d_x_ptr, d_pos_ptr, base, length);  // Only X
 
         // Re-Partion, Note that: Use stable partition, rather than partition
         Float3Iterator first_of_invalid = thrust::stable_partition(first_of_R1, first_of_R0, is_interior_tuple());
@@ -671,50 +663,5 @@ namespace CudaChain {
         delete D;
         return h - 1;
     }
-
-////////////////////////////////////////////////////////////////////////////////
-//
-//int main(int argc, char **argv) {
-//    std::cout << "\nBLOCK_SIZE :  " << BLOCK_SIZE << '\n';
-//
-//    // Host containers for storing x and y
-//    thrust::host_vector<float> ipts_x;
-//    thrust::host_vector<float> ipts_y;
-//
-//
-//    std::string path = "/home/sina/Documents/ConvexHullPlayGround/cudachain/sample.txt";
-//    // Input points
-//    importQHull(ipts_x, ipts_y, path);
-//    cout << ipts_x.size() << endl;
-//    for (float pt:ipts_x) {
-//        cout << pt << endl;
-//    }
-//
-//    int n = ipts_x.size();
-//
-//    thrust::host_vector<float> opts_x(n);
-//    thrust::host_vector<float> opts_y(n);
-//
-//    // Perform 1st and 2nd rounds of discarding
-//    int h = cudaChainNew(ipts_x, ipts_y, opts_x, opts_y);
-//
-//    // Finalize the computing of expected convex hull, i.e.,
-//    // Calculate the convex hull of a simple polygon
-//    CudaChainPoint *opts = new CudaChainPoint[h];
-//    for (int i = 0; i < h; i++) {
-//        opts[i].x = opts_x[i];
-//        opts[i].y = opts_y[i];
-//    }
-//    CudaChainPoint *H = new CudaChainPoint[h];
-//    h = simpleHull_2D(opts, h, H);
-//
-//    // Output: to OFF file format
-////    exportOFF(H, h);
-//
-//    delete[] opts;
-//
-////    system("pause");
-//
-//    return 0;
-//}
 }
+////////////////////////////////////////////////////////////////////////////////
